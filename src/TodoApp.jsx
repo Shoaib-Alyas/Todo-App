@@ -49,7 +49,7 @@ const App = () => {
           ))}
         </ul>
       ) : (
-        <p className="no-tasks">No tasks yet. Add one above!</p>
+        <p className="no-tasks">No tasks yet..Add one above!</p>
       )}
     </div>
   );
