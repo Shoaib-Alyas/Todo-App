@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import "./App.css"; 
+import "./App.css";
 
 const App = () => {
   const [newTask, setNewTask] = useState("");
   const [todoList, setTodoList] = useState([]);
+  const [isEditing, setIsEditing] = useState(null);
+  const [editedTask, setEditedTask] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,6 +17,20 @@ const App = () => {
 
   const removeTask = (targetIdx) => {
     setTodoList((prev) => prev.filter((_, idx) => idx !== targetIdx));
+  };
+
+  const handleEdit = (idx) => {
+    setIsEditing(idx);
+    setEditedTask(todoList[idx]);
+  };
+
+  const saveEdit = (idx) => {
+    if (!editedTask.trim()) return;
+    setTodoList((prev) =>
+      prev.map((task, i) => (i === idx ? editedTask.trim() : task))
+    );
+    setIsEditing(null);
+    setEditedTask("");
   };
 
   return (
@@ -38,13 +54,38 @@ const App = () => {
         <ul className="task-list">
           {todoList.map((todo, idx) => (
             <li key={`${todo}-${idx}`} className="task-item">
-              <span>{todo}</span>
-              <button
-                onClick={() => removeTask(idx)}
-                className="remove-button"
-              >
-                Remove
-              </button>
+              {isEditing === idx ? (
+                <>
+                  <input
+                    type="text"
+                    value={editedTask}
+                    onChange={(e) => setEditedTask(e.target.value)}
+                    className="edit-input"
+                  />
+                  <button
+                    onClick={() => saveEdit(idx)}
+                    className="save-button"
+                  >
+                    Save
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span>{todo}</span>
+                  <button
+                    onClick={() => handleEdit(idx)}
+                    className="edit-button"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => removeTask(idx)}
+                    className="remove-button"
+                  >
+                    Remove
+                  </button>
+                </>
+              )}
             </li>
           ))}
         </ul>
